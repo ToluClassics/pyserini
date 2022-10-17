@@ -23,11 +23,16 @@ import os
 from dataclasses import dataclass
 from typing import Dict, List, Union, Optional, Tuple
 
-import numpy as np
 import pandas as pd
 
+import t5x
+import gin
+import jax.numpy as jnp
+import numpy as np
+
+
 from transformers import (AutoModel, AutoTokenizer, BertModel, BertTokenizer, BertTokenizerFast,
-                          DPRQuestionEncoder, DPRQuestionEncoderTokenizer, RobertaTokenizer)
+                          DPRQuestionEncoder, DPRQuestionEncoderTokenizer, RobertaTokenizer, T5Tokenizer)
 from transformers.file_utils import is_faiss_available, requires_backends
 
 from pyserini.util import (download_encoded_queries, download_prebuilt_index,
@@ -327,6 +332,50 @@ class AutoQueryEncoder(QueryEncoder):
             return embeddings.flatten()
         else:
             return super().encode(query)
+
+training_config_gin_file = "config.gin"
+checkpoint_path='/Users/mac/Documents/odunayo/t5x_retrieval/20220929/checkpoint_1005400'
+dtype='bfloat16'
+restore_mode='specific'
+
+def _load_model():
+    # Parse config file
+    gin.parse_config_file(training_config_gin_file)
+    gin.finalize()
+
+    # Get model
+    model_config_ref = gin.query_parameter("%MODEL")
+    model = model_config_ref.scoped_configurable_fn()
+
+    # Load checkpoint
+    t5x_checkpoint = t5x.checkpoints.load_t5x_checkpoint(checkpoint_path)
+    model._inference_mode = 'encode'
+    return t5x_checkpoint, model
+
+
+
+class SentenceT5QueryEncoder(QueryEncoder):
+    def __init__(self, encoder_dir: str = None, tokenizer_name: str = None,
+                 encoded_query_dir: str = None, device: str = 'cpu', **kwargs):
+        self.device = device
+        self.checkpoint, self.model = _load_model()
+        self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or encoder_dir)
+
+    def encode(self, texts, titles=None,  max_length=256, **kwargs):
+        inputs = self.tokenizer(
+            texts,
+            max_length=max_length,
+            padding='longest',
+            truncation=True,
+            add_special_tokens=True
+        )
+        inputs = jnp.array(inputs["input_ids"])
+        input_batch = {
+            'left_encoder_input_tokens': inputs
+        }
+
+        output = self.model.score_batch(self.checkpoint['target'], input_batch)
+        return np.array(output).flatten()
 
 
 @dataclass

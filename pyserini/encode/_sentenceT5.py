@@ -31,7 +31,7 @@ def _load_model():
 
 
 class SentenceT5DocumentEncoder(DocumentEncoder):
-    def __init__(self, model_name, tokenizer_name=None, device='cuda:0'):
+    def __init__(self, model_name=None, tokenizer_name=None, device='cuda:0'):
         self.device = device
         self.checkpoint, self.model = _load_model()
         self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or model_name)
