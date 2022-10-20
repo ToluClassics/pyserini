@@ -10,7 +10,7 @@ from transformers import T5Tokenizer
 
 
 training_config_gin_file = "config.gin"
-checkpoint_path='/Users/mac/Documents/odunayo/t5x_retrieval/20220929/checkpoint_1005400'
+checkpoint_path="/home/oogundep/odunayo/t5x_retrieval/20220929/checkpoint_1005400"
 dtype='bfloat16'
 restore_mode='specific'
 
@@ -31,7 +31,7 @@ def _load_model():
 
 
 class SentenceT5DocumentEncoder(DocumentEncoder):
-    def __init__(self, model_name=None, tokenizer_name=None, device='cuda:0'):
+    def __init__(self, model_name=None, tokenizer_name="/home/oogundep/odunayo/sentencepiece.model", device='cuda:0'):
         self.device = device
         self.checkpoint, self.model = _load_model()
         self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or model_name)

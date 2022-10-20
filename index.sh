@@ -1,0 +1,1 @@
+python -m pyserini.encode input   --corpus /home/oogundep/msmarco_data/collection_jsonl --fields text --shard-id 0 --shard-num 1 output  --embeddings /home/oogundep/pyserini/indexes/msmarco --to-faiss encoder --encoder st5 --fields text --batch 256 --fp16

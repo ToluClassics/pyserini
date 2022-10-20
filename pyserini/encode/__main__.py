@@ -19,7 +19,7 @@ import sys
 
 from pyserini.encode import JsonlRepresentationWriter, FaissRepresentationWriter, JsonlCollectionIterator
 from pyserini.encode import DprDocumentEncoder, TctColBertDocumentEncoder, AnceDocumentEncoder, AutoDocumentEncoder
-from pyserini.encode import UniCoilDocumentEncoder
+from pyserini.encode import UniCoilDocumentEncoder, SentenceT5DocumentEncoder
 
 
 encoder_class_map = {
@@ -29,6 +29,7 @@ encoder_class_map = {
     "sentence-transformers": AutoDocumentEncoder,
     "unicoil": UniCoilDocumentEncoder,
     "auto": AutoDocumentEncoder,
+    "st5": SentenceT5DocumentEncoder
 }
 
 def init_encoder(encoder, encoder_class, device):
