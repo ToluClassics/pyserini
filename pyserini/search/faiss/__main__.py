@@ -22,7 +22,7 @@ from tqdm import tqdm
 
 from pyserini.search import FaissSearcher, BinaryDenseSearcher, TctColBertQueryEncoder, QueryEncoder, \
     DprQueryEncoder, BprQueryEncoder, DkrrDprQueryEncoder, AnceQueryEncoder, AutoQueryEncoder, DenseVectorAveragePrf, \
-    DenseVectorRocchioPrf, DenseVectorAncePrf
+    DenseVectorRocchioPrf, DenseVectorAncePrf, SentenceT5QueryEncoder
 from pyserini.encode import PcaEncoder
 from pyserini.query_iterator import get_query_iterator, TopicsFormat
 from pyserini.output_writer import get_output_writer, OutputFormat
@@ -40,7 +40,7 @@ def define_dsearch_args(parser):
                         help="Path to Faiss index or name of prebuilt index.")
     parser.add_argument('--encoder-class', type=str, metavar='which query encoder class to use. `default` would infer from the args.encoder',
                         required=False,
-                        choices=["dkrr", "dpr", "bpr", "tct_colbert", "ance", "sentence", "auto"],
+                        choices=["dkrr", "dpr", "bpr", "tct_colbert", "ance", "sentence", "auto", "st5"],
                         default=None,
                         help='which query encoder class to use. `default` would infer from the args.encoder')
     parser.add_argument('--encoder', type=str, metavar='path to query encoder checkpoint or encoder name',
@@ -100,6 +100,7 @@ def init_query_encoder(encoder, encoder_class, tokenizer_name, topics_name, enco
         "ance": AnceQueryEncoder,
         "sentence": AutoQueryEncoder,
         "auto": AutoQueryEncoder,
+        "st5": SentenceT5QueryEncoder,
     }
 
     if encoder:

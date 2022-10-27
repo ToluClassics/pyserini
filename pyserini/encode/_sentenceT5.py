@@ -61,3 +61,7 @@ class SentenceT5DocumentEncoder(DocumentEncoder):
 #     out = encoder.encode(source_sentence)
 #
 #     print(type(out))
+# from pyserini.search.faiss import FaissSearcher, SentenceT5QueryEncoder
+# encoder = SentenceT5QueryEncoder()
+# searcher = FaissSearcher("/home/oogundep/pyserini/indexes/msmarco", encoder)
+# hits = searcher.search('what is crime rate in canada')

@@ -334,7 +334,7 @@ class AutoQueryEncoder(QueryEncoder):
             return super().encode(query)
 
 training_config_gin_file = "config.gin"
-checkpoint_path='/Users/mac/Documents/odunayo/t5x_retrieval/20220929/checkpoint_1005400'
+checkpoint_path="/home/oogundep/odunayo/t5x_retrieval/20220929/checkpoint_1005400"
 dtype='bfloat16'
 restore_mode='specific'
 
@@ -355,23 +355,24 @@ def _load_model():
 
 
 class SentenceT5QueryEncoder(QueryEncoder):
-    def __init__(self, encoder_dir: str = None, tokenizer_name: str = None,
+    def __init__(self, encoder_dir: str = None, tokenizer_name: str = "/home/oogundep/odunayo/sentencepiece.model",
                  encoded_query_dir: str = None, device: str = 'cpu', **kwargs):
         self.device = device
         self.checkpoint, self.model = _load_model()
         self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or encoder_dir)
 
-    def encode(self, texts, titles=None,  max_length=256, **kwargs):
+    def encode(self, query: str):
         inputs = self.tokenizer(
-            texts,
-            max_length=max_length,
+            query,
+            max_length=64,
             padding='longest',
             truncation=True,
             add_special_tokens=True
         )
         inputs = jnp.array(inputs["input_ids"])
+
         input_batch = {
-            'left_encoder_input_tokens': inputs
+            'left_encoder_input_tokens': np.expand_dims(inputs, axis=0)
         }
 
         output = self.model.score_batch(self.checkpoint['target'], input_batch)
@@ -411,6 +412,7 @@ class FaissSearcher:
         self.dimension = self.index.d
         self.num_docs = self.index.ntotal
 
+        # print(self.num_docs)
         assert self.docids is None or self.num_docs == len(self.docids)
         if prebuilt_index_name:
             sparse_index = get_sparse_index(prebuilt_index_name)

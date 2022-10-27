@@ -19,3 +19,5 @@ runs/
 
 # logs should also be ignored
 logs/
+*.log
+*.out
