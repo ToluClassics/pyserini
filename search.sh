@@ -1,8 +1,10 @@
+export CUDA_VISIBLE_DEVICES=0
+
 python -m pyserini.dsearch \
-    --topics dl19-passage \
-    --index /home/oogundep/pyserini/indexes/msmarco_new_faiss \
+    --topics msmarco-passage-dev-subset \
+    --index /home/oogundep/pyserini/indexes/msmarco_official_faiss \
     --encoder /home/oogundep/odunayo/sentencepiece.model \
     --encoder-class st5 \
-    --batch-size 128 \
+    --batch-size 256 \
     --threads 12 \
-    --output runs/run.msmarco-passage.dl-19.st5.txt
+    --output runs/run.msmarco-passage.new.st5.txt

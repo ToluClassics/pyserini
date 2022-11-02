@@ -10,11 +10,11 @@ from transformers import T5Tokenizer
 
 
 training_config_gin_file = "config.gin"
-checkpoint_path="/home/oogundep/odunayo/t5x_retrieval/20220929/checkpoint_1005400"
+# checkpoint_path="/home/oogundep/odunayo/t5x_retrieval/20220929/checkpoint_1009900"
 dtype='bfloat16'
 restore_mode='specific'
 
-def _load_model():
+def _load_model(checkpoint_path: str):
     # Parse config file
     gin.parse_config_file(training_config_gin_file)
     gin.finalize()
@@ -33,10 +33,10 @@ def _load_model():
 class SentenceT5DocumentEncoder(DocumentEncoder):
     def __init__(self, model_name=None, tokenizer_name="/home/oogundep/odunayo/sentencepiece.model", device='cuda:0'):
         self.device = device
-        self.checkpoint, self.model = _load_model()
+        self.checkpoint, self.model = _load_model(model_name)
         self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or model_name)
 
-    def encode(self, texts, titles=None,  max_length=256, **kwargs):
+    def encode(self, texts, titles=None,  max_length=512, **kwargs):
         inputs = self.tokenizer(
             texts,
             max_length=max_length,

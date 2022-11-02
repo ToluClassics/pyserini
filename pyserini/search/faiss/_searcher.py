@@ -334,7 +334,7 @@ class AutoQueryEncoder(QueryEncoder):
             return super().encode(query)
 
 training_config_gin_file = "config.gin"
-checkpoint_path="/home/oogundep/odunayo/t5x_retrieval/20220929/checkpoint_1005400"
+checkpoint_path="/home/oogundep/odunayo/official_checkpoint/gtr_base"
 dtype='bfloat16'
 restore_mode='specific'
 
