@@ -31,7 +31,7 @@ def _load_model(checkpoint_path: str):
 
 
 class SentenceT5DocumentEncoder(DocumentEncoder):
-    def __init__(self, model_name=None, tokenizer_name="/home/oogundep/odunayo/sentencepiece.model", device='cuda:0'):
+    def __init__(self, model_name=None, tokenizer_name="/home/oogundep/odunayo/mgtr/sentencepiece.model", device='cuda:0'):
         self.device = device
         self.checkpoint, self.model = _load_model(model_name)
         self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or model_name)

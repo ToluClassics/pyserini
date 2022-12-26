@@ -40,21 +40,22 @@ EVALUATOR_NUM_EXAMPLES = None
 EVALUATOR_USE_MEMORY_CACHE = True
 HEAD_DIM = 64
 INITIAL_CHECKPOINT_PATH = \
-    'gs://t5-data/pretrained_models/t5x/t5_base/checkpoint_999900'
+    'gs://t5-data/pretrained_models/t5x/mt5_base/checkpoint_1000000'
 JSON_WRITE_N_RESULTS = None
 MIXTURE_OR_TASK_MODULE = 't5x_retrieval.tasks'
-MIXTURE_OR_TASK_NAME = 'beir_msmarco_retrieval'
-MLP_DIM = 3072
+MIXTURE_OR_TASK_NAME = 'multilingual_marco_mixture'
+MLP_DIM = 2048
 MODEL = @models2.DualEncoderModel()
-MODEL_DIR = 'gs://pongo-bucket/odunayo/t5x_retrieval/20220929'
-NUM_EMBEDDINGS = 32128
+MODEL_DIR = 'gs://pongo-bucket/odunayo/mt5x_retrieval/20221220'
+NUM_EMBEDDINGS = 250112
 NUM_HEADS = 12
 NUM_LAYERS = 12
 OPTIMIZER = @adafactor.Adafactor()
 PROJECTION_DIM = 768
 RANDOM_SEED = None
+SCALE = 1.0
 TASK_FEATURE_LENGTHS = {'inputs': 64, 'targets': 256}
-TRAIN_STEPS = 1009900
+TRAIN_STEPS = 1100000
 USE_CACHED_TASKS = False
 USE_HARDWARE_RNG = False
 VOCABULARY = @seqio.SentencePieceVocabulary()
@@ -208,7 +209,7 @@ seqio.JSONLogger.write_n_results = %JSON_WRITE_N_RESULTS
 
 # Parameters for dense.MlpBlock:
 # ==============================================================================
-dense.MlpBlock.activations = ('relu',)
+dense.MlpBlock.activations = ('gelu', 'linear')
 dense.MlpBlock.bias_init = %BIAS_INIT
 dense.MlpBlock.dtype = %ACTIVATION_DTYPE
 dense.MlpBlock.final_dropout_rate = 0
@@ -271,12 +272,16 @@ utils.SaveCheckpointConfig.save_dataset = False
 # Parameters for seqio.SentencePieceVocabulary:
 # ==============================================================================
 seqio.SentencePieceVocabulary.sentencepiece_model_file = \
-    'gs://t5-data/vocabs/cc_all.32000.100extra/sentencepiece.model'
+    'gs://t5-data/vocabs/mc4.250000.100extra/sentencepiece.model'
 
 # Parameters for partitioning.standard_logical_axis_rules:
 # ==============================================================================
 partitioning.standard_logical_axis_rules.additional_rules = \
     @t5xr_partitioning.standard_logical_axis_rules()
+
+# Parameters for layer_norm.T5LayerNorm:
+# ==============================================================================
+layer_norm.T5LayerNorm.dtype = %ACTIVATION_DTYPE
 
 # Parameters for train.train:
 # ==============================================================================
@@ -305,25 +310,25 @@ trainer.Trainer.num_microbatches = None
 # ==============================================================================
 attention_kernel_init/linen.initializers.variance_scaling.distribution = 'normal'
 attention_kernel_init/linen.initializers.variance_scaling.mode = 'fan_in'
-attention_kernel_init/linen.initializers.variance_scaling.scale = 1.0
+attention_kernel_init/linen.initializers.variance_scaling.scale = %SCALE
 
 # Parameters for mlp_kernel_init/linen.initializers.variance_scaling:
 # ==============================================================================
 mlp_kernel_init/linen.initializers.variance_scaling.distribution = \
     'truncated_normal'
 mlp_kernel_init/linen.initializers.variance_scaling.mode = 'fan_in'
-mlp_kernel_init/linen.initializers.variance_scaling.scale = 1.0
+mlp_kernel_init/linen.initializers.variance_scaling.scale = %SCALE
 
 # Parameters for projection_layer/linen.initializers.variance_scaling:
 # ==============================================================================
 projection_layer/linen.initializers.variance_scaling.distribution = \
     'truncated_normal'
 projection_layer/linen.initializers.variance_scaling.mode = 'fan_in'
-projection_layer/linen.initializers.variance_scaling.scale = 1
+projection_layer/linen.initializers.variance_scaling.scale = %SCALE
 
 # Parameters for relative_position_bias_init/linen.initializers.variance_scaling:
 # ==============================================================================
 relative_position_bias_init/linen.initializers.variance_scaling.distribution = \
     'uniform'
 relative_position_bias_init/linen.initializers.variance_scaling.mode = 'fan_avg'
-relative_position_bias_init/linen.initializers.variance_scaling.scale = 1.0
+relative_position_bias_init/linen.initializers.variance_scaling.scale = %SCALE
