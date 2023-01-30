@@ -143,7 +143,7 @@ if __name__ == '__main__':
     args = parse_args(parser, commands)
     delimiter = args.input.delimiter.replace("\\n", "\n")  # argparse would add \ prior to the passed '\n\n'
 
-    encoder = init_encoder(args.encoder.encoder, args.encoder.encoder_class, device=args.encoder.device)
+    encoder = init_encoder(args.encoder.encoder, args.encoder.encoder_class, device=None)
     if args.output.to_faiss:
         embedding_writer = FaissRepresentationWriter(args.output.embeddings, dimension=args.encoder.dimension)
     else:

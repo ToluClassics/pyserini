@@ -127,7 +127,7 @@ class JsonlCollectionIterator:
             with open(filename) as f:
                 for line_i, line in tqdm(enumerate(f)):
                     info = json.loads(line)
-                    _id = info.get('id', info.get('docid', None))
+                    _id = info.get('id', info.get('docid', info.get('_id', None)))
                     if _id is None:
                         raise ValueError(f"Cannot find 'id' or 'docid' from {filename}.")
                     all_info['id'].append(str(_id))
