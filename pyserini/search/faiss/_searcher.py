@@ -333,8 +333,8 @@ class AutoQueryEncoder(QueryEncoder):
         else:
             return super().encode(query)
 
-training_config_gin_file = "config.gin"
-checkpoint_path="/home/oogundep/odunayo/mgtr/base/checkpoint_1100000"
+training_config_gin_file = "/home/mac/t5x_retrieval/t5x_retrieval/configs/models/de_t5_base.gin"
+checkpoint_path="gs://t5-data/pretrained_models/t5x/retrieval/gtr_base"
 dtype='bfloat16'
 restore_mode='specific'
 
@@ -355,11 +355,11 @@ def _load_model():
 
 
 class SentenceT5QueryEncoder(QueryEncoder):
-    def __init__(self, encoder_dir: str = None, tokenizer_name: str = "/home/oogundep/odunayo/mgtr/sentencepiece.model",
+    def __init__(self, encoder_dir: str = None, tokenizer_name: str = "/home/mac/sentencepiece.model",
                  encoded_query_dir: str = None, device: str = None, **kwargs):
         self.device = device
         self.checkpoint, self.model = _load_model()
-        self.tokenizer = T5Tokenizer.from_pretrained(tokenizer_name or encoder_dir)
+        self.tokenizer = T5Tokenizer.from_pretrained("/home/mac/sentencepiece.model")
 
     def encode(self, query: str):
         inputs = self.tokenizer(
