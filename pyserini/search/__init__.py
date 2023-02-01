@@ -21,7 +21,7 @@ from .lucene import JImpactSearcherResult, LuceneImpactSearcher
 from ._deprecated import SimpleSearcher, ImpactSearcher, SimpleFusionSearcher
 
 from .faiss import DenseSearchResult, PRFDenseSearchResult, FaissSearcher, BinaryDenseSearcher, QueryEncoder, \
-    DprQueryEncoder, BprQueryEncoder, DkrrDprQueryEncoder, TctColBertQueryEncoder, AnceQueryEncoder, AutoQueryEncoder
+    DprQueryEncoder, BprQueryEncoder, DkrrDprQueryEncoder, TctColBertQueryEncoder, AnceQueryEncoder, AutoQueryEncoder, GtrQueryEncoder, GTRModel
 from .faiss import AnceEncoder
 from .faiss import DenseVectorAveragePrf, DenseVectorRocchioPrf, DenseVectorAncePrf
 
@@ -56,5 +56,7 @@ __all__ = ['JQuery',
            'AutoQueryEncoder',
            'DenseVectorAveragePrf',
            'DenseVectorRocchioPrf',
-           'DenseVectorAncePrf']
+           'DenseVectorAncePrf',
+           'GtrQueryEncoder',
+           'GTRModel']
 

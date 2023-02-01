@@ -19,7 +19,7 @@ import sys
 
 from pyserini.encode import JsonlRepresentationWriter, FaissRepresentationWriter, JsonlCollectionIterator
 from pyserini.encode import DprDocumentEncoder, TctColBertDocumentEncoder, AnceDocumentEncoder, AutoDocumentEncoder
-from pyserini.encode import UniCoilDocumentEncoder, GtrDocumentEncoder
+from pyserini.encode import UniCoilDocumentEncoder, GtrDocumentEncoder, GTRModel
 
 
 encoder_class_map = {
@@ -55,6 +55,8 @@ def init_encoder(encoder, encoder_class, device):
     kwargs = dict(model_name=encoder, device=device)
     if (_encoder_class == "sentence-transformers") or ("sentence-transformers" in encoder):
         kwargs.update(dict(pooling='mean', l2_norm=True))
+    
+    print(kwargs)
 
     return encoder_class(**kwargs)
 
@@ -124,7 +126,7 @@ if __name__ == '__main__':
     with embedding_writer:
         for batch_info in collection_iterator(args.encoder.batch_size, args.input.shard_id, args.input.shard_num):
             kwargs = {
-                'texts': batch_info['contents'],
+                'texts': batch_info['text'],
                 'titles': batch_info['title'] if 'title' in args.encoder.fields else None,
                 'expands': batch_info['expand'] if 'expand' in args.encoder.fields else None,
                 'fp16': args.encoder.fp16,
